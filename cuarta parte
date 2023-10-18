@@ -1,0 +1,278 @@
+//Emiliano Daniel Barrio Maurich 1B
+//PARTE 4° PARCIAL
+
+#define LED_A 9
+#define LED_B 10
+#define LED_C 13
+#define LED_D 12
+#define LED_E 11
+#define LED_G 7
+#define LED_F 8
+#define MOTOR 5
+#define SENSOR_FUERZA A0
+#define FOTORRESISTENCIA A1
+#define UNIDAD A5
+#define DECENA A4
+#define SWITCH_1 6
+#define SWITCH_2 4
+#define APAGADOS 0
+
+int contador = 0;
+int contador_pares = 0;
+int fuerzaLeida = 0;
+int fuerza = 0;
+int luzLeida = 0;
+int luz = 0;
+
+void setup()
+{
+  pinMode(LED_A, OUTPUT);
+  pinMode(LED_B, OUTPUT);
+  pinMode(LED_C, OUTPUT);
+  pinMode(LED_D, OUTPUT);
+  pinMode(LED_E, OUTPUT);
+  pinMode(LED_F, OUTPUT);
+  pinMode(LED_G, OUTPUT);
+  pinMode(UNIDAD, OUTPUT);
+  pinMode(DECENA, OUTPUT);
+  pinMode(MOTOR, OUTPUT);
+  pinMode(SWITCH_1, INPUT);
+  pinMode(SWITCH_2, INPUT);
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  if(digitalRead(SWITCH_1) == LOW && digitalRead(SWITCH_2) == LOW)//SI AMBOS INTERRUPTORES SE ENCUENTRAN A LA DERECHA SE MUESTRA EN EL DISPLAY UN CONTADOR QUE VA DE UNO EN UNO.
+  {
+    contador_pares = 0;
+    
+    prenderContador(contador, 500);  
+
+    contador++;
+    
+    if(contador > 99)
+    {
+      digitalWrite(MOTOR, HIGH);
+      contador = contar_reversa(contador);
+    } 
+    else
+    {
+      digitalWrite(MOTOR, LOW);
+    }
+  }
+  if(digitalRead(SWITCH_1) == HIGH && digitalRead(SWITCH_2) == HIGH)//SI AMBOS INTERRUPTORES SE ENCUENTRAN A LA IZQUIERDA SE MUESTRA EN EL DISPLAY UN CONTADOR DE NUMEROS PARES.
+  {  
+    contador = 0;  
+    
+    contador_pares = generar_pares(contador_pares);
+    prenderContador(contador_pares, 500);
+    
+    contador_pares++;
+    if(contador_pares > 98)
+    {
+      digitalWrite(MOTOR, HIGH);
+      contador_pares = contar_reversa(contador_pares);
+    }
+    else
+    {
+      digitalWrite(MOTOR, LOW);
+    }
+  }
+  
+  if(digitalRead(SWITCH_1) == LOW && digitalRead(SWITCH_2) == HIGH)//SI EL INTERRUPTOR 1 ESTA A LA DERECHA Y EL INTERRUPTOR 2 A LA IZQUIERDA SE MUESTRA EN EL DISPLAY EL VALOR QUE DEVUELVE EL MEDIDOR DE FUERZA.
+  {
+    fuerzaLeida = analogRead(SENSOR_FUERZA);
+ 	fuerza = map(fuerzaLeida, 0, 912, 0, 10);
+    prenderContador(fuerza, 100);
+  }
+  if(digitalRead(SWITCH_1) == HIGH && digitalRead(SWITCH_2) == LOW)//SI EN INTERRUPTOR 1 ESTA A LA IZQUIERDA Y EL INTERRUPTOR 2 ESTA A LA DERECHA SE MUESTRA EN EL DISPLAY EL VALOR QUE DEVUELVE EL SENSOR DE FOTORRESISTENCIA.
+  {
+    luzLeida = analogRead(FOTORRESISTENCIA);
+    luz = map(luzLeida, 54, 974, 1, 100);
+    prenderContador(luz, 50);
+    if (luz > 99)
+    {
+      digitalWrite(MOTOR, HIGH);
+      prenderContador(0, 500);
+    }
+    else
+    {
+      digitalWrite(MOTOR, LOW);
+    }
+  }
+}
+
+void prenderNumero(int numero)
+{
+  digitalWrite(LED_A, LOW);
+  digitalWrite(LED_B, LOW);
+  digitalWrite(LED_C, LOW);
+  digitalWrite(LED_D, LOW);
+  digitalWrite(LED_E, LOW);
+  digitalWrite(LED_F, LOW);
+  digitalWrite(LED_G, LOW);
+  
+  switch(numero)
+  {
+    case(0):
+    {
+      digitalWrite(LED_A, HIGH);
+      digitalWrite(LED_B, HIGH);
+      digitalWrite(LED_C, HIGH);
+      digitalWrite(LED_D, HIGH);
+      digitalWrite(LED_E, HIGH);
+      digitalWrite(LED_F, HIGH);
+      break;
+    }
+    case(1):
+    {
+      digitalWrite(LED_B, HIGH);
+  	  digitalWrite(LED_C, HIGH);
+      break;
+    }
+    case(2):
+    {
+      digitalWrite(LED_A, HIGH);
+      digitalWrite(LED_B, HIGH);
+      digitalWrite(LED_D, HIGH);
+      digitalWrite(LED_E, HIGH);
+      digitalWrite(LED_G, HIGH);
+      break;
+    }
+    case(3):
+    {
+      digitalWrite(LED_A, HIGH);
+      digitalWrite(LED_B, HIGH);
+      digitalWrite(LED_C, HIGH);
+      digitalWrite(LED_D, HIGH);
+      digitalWrite(LED_G, HIGH);
+      break;
+    }
+    case(4):
+    {
+      digitalWrite(LED_B, HIGH);
+      digitalWrite(LED_C, HIGH);
+      digitalWrite(LED_F, HIGH);
+      digitalWrite(LED_G, HIGH);
+      break;
+    }
+    case(5):
+    {
+      digitalWrite(LED_A, HIGH);
+      digitalWrite(LED_C, HIGH);
+      digitalWrite(LED_D, HIGH);
+      digitalWrite(LED_F, HIGH);
+      digitalWrite(LED_G, HIGH);
+      break;
+    }
+    case(6):
+    {
+      digitalWrite(LED_A, HIGH);
+      digitalWrite(LED_C, HIGH);
+      digitalWrite(LED_D, HIGH);
+      digitalWrite(LED_E, HIGH);
+      digitalWrite(LED_F, HIGH);
+      digitalWrite(LED_G, HIGH); 
+      break;
+    }
+    case(7):
+    {
+      digitalWrite(LED_A, HIGH);
+      digitalWrite(LED_B, HIGH);
+      digitalWrite(LED_C, HIGH);
+      break;
+    }
+    case(8):
+    {
+      digitalWrite(LED_A, HIGH);
+      digitalWrite(LED_B, HIGH);
+      digitalWrite(LED_C, HIGH);
+      digitalWrite(LED_D, HIGH);
+      digitalWrite(LED_E, HIGH);
+      digitalWrite(LED_F, HIGH);
+      digitalWrite(LED_G, HIGH);
+      break;
+    }
+    case(9):
+    {
+      digitalWrite(LED_A, HIGH);
+      digitalWrite(LED_B, HIGH);
+      digitalWrite(LED_C, HIGH);
+      digitalWrite(LED_D, HIGH);
+      digitalWrite(LED_F, HIGH);
+      digitalWrite(LED_G, HIGH);
+      break;
+    }
+  }
+}
+
+void prenderContador(int numero, int delay)
+{ 
+  bool flag = "True";
+  int cantidad = delay/20;
+  while (flag = "True")
+  {
+    prender_Uni_Dec(APAGADOS);
+    prenderNumero(numero/10);
+    prender_Uni_Dec(DECENA);
+    prender_Uni_Dec(APAGADOS);
+    prenderNumero(numero - 10*((int)numero/10));
+    prender_Uni_Dec(UNIDAD);  
+    cantidad --;
+    if(cantidad == 0)
+    {
+      break;
+    }
+  }
+}
+  
+  
+void prender_Uni_Dec(int digito)
+{
+  if(digito == UNIDAD)
+  {
+    digitalWrite(UNIDAD, LOW);
+    digitalWrite(DECENA, HIGH);
+    delay(10);
+  }
+  else if(digito == DECENA)
+  {
+    digitalWrite(DECENA, LOW);
+    digitalWrite(UNIDAD, HIGH);
+    delay(10);
+  }
+  else
+  {
+    digitalWrite(DECENA, HIGH);
+    digitalWrite(UNIDAD, HIGH);
+  }
+}
+
+
+int contar_reversa(int contador)
+{
+  while (contador > 0)
+  {
+    contador--;
+    prenderContador(contador, 100);
+  }
+  return contador;
+}  
+
+int generar_pares(int numero)//LA FUNCION RECIBE POR PARAMETRO UN NUMERO Y DEVUELVE EL NUMERO PAR MAS PROXIMO. SI EL NUMERO QUE SE PASO ES PAR RETORNA EL MISMO.
+{
+  bool flag = "True";
+  while (flag = "True")
+  {
+    if(numero%2 == 0)
+    {
+      break;
+    }
+    else
+    {
+      numero++;
+    } 
+  }
+  return numero;
+}
